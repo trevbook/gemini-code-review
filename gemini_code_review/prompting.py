@@ -6,10 +6,6 @@ Module that handles prompting the Gemini API.
 # SETUP
 # =====
 
-from dotenv import load_dotenv
-
-load_dotenv(override=True)
-
 import os
 from typing import Optional
 
@@ -18,13 +14,17 @@ from pydantic_ai.models.google import GoogleModel
 from pydantic_ai.providers.google import GoogleProvider
 from pydantic import BaseModel, Field
 
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
+
 
 # Configure model provider
 google_api_key = os.getenv("GOOGLE_API_KEY")
 if not google_api_key:
     raise ValueError("GOOGLE_API_KEY environment variable is not set.")
 provider = GoogleProvider(api_key=google_api_key)
-model = GoogleModel(model_name="gemini-2.5-pro", provider=provider)
+model = GoogleModel(model_name="gemini-3-pro-preview", provider=provider)
 
 
 def generate_system_prompt(
@@ -67,7 +67,9 @@ The user provided some additional instructions to consider while performing the 
 
 ---
 """
-        prompt_template = prompt_template.replace("[USER_INSTRUCTIONS]", user_instructions_clause)
+        prompt_template = prompt_template.replace(
+            "[USER_INSTRUCTIONS]", user_instructions_clause
+        )
     else:
         prompt_template = prompt_template.replace("[USER_INSTRUCTIONS]", "")
 
@@ -78,19 +80,29 @@ class CodebaseIssue(BaseModel):
     """Schema for a single codebase issue identified by the agent."""
 
     category: str = Field(
-        ..., description='Issue category (e.g., "Architecture", "Docs", "Security", "Efficiency", "Readability", "Testing", "DevX").'
+        ...,
+        description='Issue category (e.g., "Architecture", "Docs", "Security", "Efficiency", "Readability", "Testing", "DevX").',
     )
-    title: str = Field(..., description="Concise one-line name for the issue (~8 words).")
-    rationale: str = Field(..., description="Short explanation of why this issue matters.")
+    title: str = Field(
+        ..., description="Concise one-line name for the issue (~8 words)."
+    )
+    rationale: str = Field(
+        ..., description="Short explanation of why this issue matters."
+    )
     detailed_description: str = Field(
-        ..., description="Detailed description, including specific examples from the codebase if possible."
+        ...,
+        description="Detailed description, including specific examples from the codebase if possible.",
     )
-    severity: str = Field(..., description="One of: 'Low', 'Medium', 'High', 'Critical'.")
+    severity: str = Field(
+        ..., description="One of: 'Low', 'Medium', 'High', 'Critical'."
+    )
     location: str = Field(
-        ..., description="Where the issue occurs (file, directory, class, function, etc.)."
+        ...,
+        description="Where the issue occurs (file, directory, class, function, etc.).",
     )
     estimated_effort: str = Field(
-        ..., description="One of: 'Low' (minutes), 'Medium' (hours), 'High' (days), 'Very High' (weeks+)."
+        ...,
+        description="One of: 'Low' (minutes), 'Medium' (hours), 'High' (days), 'Very High' (weeks+).",
     )
     implementation_plan: str = Field(
         ..., description="1-3 sentences describing how to approach fixing the issue."
@@ -114,8 +126,8 @@ def run_code_review(
         n_issues_to_surface=n_issues_to_surface, user_instructions=user_instructions
     )
 
-    agent = Agent(model=model, system_prompt=system_prompt, output_type=CodeReviewResponse)
+    agent = Agent(
+        model=model, system_prompt=system_prompt, output_type=CodeReviewResponse
+    )
     result = agent.run_sync(codebase_xml)
     return result.output
-
-

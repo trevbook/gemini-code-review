@@ -45,6 +45,8 @@ def dump_repo_to_xml(repo_path: Path, keep: bool = False) -> str:
         "--quiet",
         "--style",
         "xml",
+        "--ignore",
+        ".next/,.open-next/",
         "--output",
         str(tmp_path),
         str(repo_path),
@@ -247,10 +249,10 @@ def main(argv: list[str] | None = None) -> int:
         df = pd.DataFrame(rows)
         df = df.reindex(columns=desired_columns)
 
-        # Timestamped output filename as requested: gemini_code_reivew_[mm]-[dd]-[yyyy]_[hh]-[mm].xlsx
+        # Timestamped output filename as requested: gemini_code_review_[mm]-[dd]-[yyyy]_[hh]-[mm].xlsx
         now = datetime.now()
         timestamp = now.strftime("%m-%d-%Y_%H-%M")
-        out_filename = f"gemini_code_reivew_{timestamp}.xlsx"
+        out_filename = f"gemini_code_review_{timestamp}.xlsx"
         out_path = Path.cwd() / out_filename
 
         from openpyxl.styles import Alignment, PatternFill

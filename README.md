@@ -44,7 +44,7 @@ If run interactively without specifying `--issues` and/or `--instructions`, the 
 
 Two outputs are produced:
 
-1. An Excel file named `gemini_code_reivew_[mm]-[dd]-[yyyy]_[hh]-[mm].xlsx` in the current working directory containing a tabular set of issues and an `ABOUT` sheet with run metadata (timestamp, repository path, output file name, token count and method, requested/returned issues, user instructions, and notes).
+1. An Excel file named `gemini_code_review_[mm]-[dd]-[yyyy]_[hh]-[mm].xlsx` in the current working directory containing a tabular set of issues and an `ABOUT` sheet with run metadata (timestamp, repository path, output file name, token count and method, requested/returned issues, user instructions, and notes).
 2. A JSON representation of the full structured response printed to stdout (so you can redirect / pipe it):
 
 ```bash
